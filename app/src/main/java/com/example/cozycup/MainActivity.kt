@@ -34,18 +34,27 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun CoffeeAppNavigation() {
     val navController = rememberNavController()
+
+    // Single source of truth for the entire app session
     val cartViewModel: CartViewModel = viewModel()
 
     NavHost(navController = navController, startDestination = "welcome") {
+
+        // --- 1. Welcome Screen ---
         composable("welcome") {
             WelcomeScreen(onGetStartedClick = { navController.navigate("home") })
         }
+
+        // --- 2. Home Screen ---
         composable("home") {
             HomeScreen(
+                viewModel = cartViewModel,
                 onItemClick = { id -> navController.navigate("detail/$id") },
                 onCartClick = { navController.navigate("cart") }
             )
         }
+
+        // --- 3. Product Detail Screen ---
         composable(
             "detail/{itemId}",
             arguments = listOf(navArgument("itemId") { type = NavType.IntType })
@@ -54,18 +63,35 @@ fun CoffeeAppNavigation() {
             if (itemId != null) {
                 ProductDetailScreen(
                     itemId = itemId,
-                    viewModel = cartViewModel, // Passing to detail
+                    viewModel = cartViewModel,
                     onBackClick = { navController.popBackStack() }
                 )
             }
         }
+
+        // --- 4. Cart Screen ---
         composable("cart") {
             CartScreen(
-                viewModel = cartViewModel, // Passing to cart
+                viewModel = cartViewModel,
                 onBackClick = { navController.popBackStack() },
                 onPlaceOrderClick = {
+                    // NEW: Navigate to checkout instead of resetting
+                    navController.navigate("checkout")
+                }
+            )
+        }
+
+        // --- 5. Checkout Screen (NEW) ---
+        composable("checkout") {
+            CheckoutScreen(
+                viewModel = cartViewModel,
+                onBackClick = { navController.popBackStack() },
+                onConfirmOrder = {
+                    // Logic: Clear the cart and go back to welcome after payment
                     cartViewModel.clearCart()
-                    navController.navigate("welcome") { popUpTo(0) }
+                    navController.navigate("welcome") {
+                        popUpTo(0) // Clears the entire backstack
+                    }
                 }
             )
         }

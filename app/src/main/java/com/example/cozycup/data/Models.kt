@@ -56,7 +56,7 @@ val sampleMenuItems = listOf(
         imageRes = R.drawable.black
     ),
 
-    // --- PASTRY CATEGORY ---
+// --- PASTRY CATEGORY ---
     MenuItem(
         id = 5,
         title = "Choux Pastry",
@@ -75,10 +75,28 @@ val sampleMenuItems = listOf(
         category = "Pastry",
         imageRes = R.drawable.berry_tart
     ),
-
-    // --- JUICE CATEGORY ---
     MenuItem(
         id = 7,
+        title = "Butter Croissant",
+        description = "flaky, buttery, gold",
+        longDescription = "Traditionally prepared with high-quality butter, our croissants are baked until golden and flaky on the outside while remaining soft and airy on the inside.",
+        price = "8 CAD",
+        category = "Pastry",
+        imageRes = R.drawable.croissant
+    ),
+    MenuItem(
+        id = 8,
+        title = "Chocolate Croissant",
+        description = "cocoa, dark chocolate",
+        longDescription = "A rich, buttery pastry filled with two batons of premium dark chocolate. A perfect balance of flaky texture and melting cocoa sweetness.",
+        price = "10 CAD",
+        category = "Pastry",
+        imageRes = R.drawable.chocolate_croissant
+    ),
+
+// --- JUICE CATEGORY ---
+    MenuItem(
+        id = 9,
         title = "Kiwi Mint Juice",
         description = "kiwi, mint, lime",
         longDescription = "A refreshing tropical escape. Freshly pressed kiwi blended with cool garden mint and a splash of lime to rejuvenate your senses.",
@@ -87,12 +105,30 @@ val sampleMenuItems = listOf(
         imageRes = R.drawable.kiwi_juice
     ),
     MenuItem(
-        id = 8,
+        id = 10,
+        title = "Papaya Nectar",
+        description = "papaya, smooth, sweet",
+        longDescription = "Savor the smooth, velvet-like texture of sun-ripened papaya, cold-pressed to retain its tropical sweetness and essential vitamins.",
+        price = "14 CAD",
+        category = "Juice",
+        imageRes = R.drawable.papaya_juice
+    ),
+    MenuItem(
+        id = 11,
         title = "Orange Zest",
         description = "100% cold-pressed",
         longDescription = "100% cold-pressed oranges harvested at peak ripeness for a sweet, tangy, and vitamin-rich morning boost with no added sugars.",
         price = "10 CAD",
         category = "Juice",
         imageRes = R.drawable.orange_juice
+    ),
+    MenuItem(
+        id = 12,
+        title = "Apricot Sunset",
+        description = "apricot, honey notes",
+        longDescription = "A unique, full-bodied juice made from golden apricots. It offers a naturally thick texture with delicate honey-like undertones and a refreshing finish.",
+        price = "12 CAD",
+        category = "Juice",
+        imageRes = R.drawable.apricot
     )
 )

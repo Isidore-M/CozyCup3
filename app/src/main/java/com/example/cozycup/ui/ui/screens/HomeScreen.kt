@@ -26,20 +26,27 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.cozycup.data.MenuItem
 import com.example.cozycup.data.sampleMenuItems
+import com.example.cozycup.ui.CartViewModel
 import com.example.cozycup.ui.ui.theme.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(onItemClick: (Int) -> Unit, onCartClick: () -> Unit) {
-    // State to track which category is selected
+fun HomeScreen(
+    viewModel: CartViewModel, // Add ViewModel to track cart count
+    onItemClick: (Int) -> Unit,
+    onCartClick: () -> Unit
+) {
+    // 1. UPDATED: Category names now match Models.kt (Singular)
     var selectedCategory by remember { mutableStateOf("Coffee") }
-    val categories = listOf("Coffee", "Pastries", "Juices")
+    val categories = listOf("Coffee", "Pastry", "Juice")
+
+    // 2. State for actual cart count
+    val cartCount = viewModel.items.size
 
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {
-                    // Brand title from design [cite: 7]
                     Text(
                         text = "CozyCup",
                         color = DarkGreen,
@@ -48,12 +55,15 @@ fun HomeScreen(onItemClick: (Int) -> Unit, onCartClick: () -> Unit) {
                     )
                 },
                 actions = {
-                    // Cart Icon (Top Right)
                     IconButton(onClick = onCartClick) {
                         BadgedBox(
                             badge = {
-                                // Badge indicating items in cart (Static for now)
-                                Badge(containerColor = red) { Text("2", color = Color.White) }
+                                // 3. Dynamic Badge: Only shows if items > 0
+                                if (cartCount > 0) {
+                                    Badge(containerColor = BrandRed) {
+                                        Text("$cartCount", color = Color.White)
+                                    }
+                                }
                             }
                         ) {
                             Icon(
@@ -75,7 +85,6 @@ fun HomeScreen(onItemClick: (Int) -> Unit, onCartClick: () -> Unit) {
                 .padding(paddingValues)
                 .padding(horizontal = 20.dp)
         ) {
-            // Greeting text from the design [cite: 8]
             Text(
                 text = "Good morning, place your order now",
                 color = TextGray,
@@ -84,7 +93,6 @@ fun HomeScreen(onItemClick: (Int) -> Unit, onCartClick: () -> Unit) {
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Category section header [cite: 6, 21, 37]
             Text(
                 text = "Categories",
                 fontWeight = FontWeight.Bold,
@@ -92,7 +100,6 @@ fun HomeScreen(onItemClick: (Int) -> Unit, onCartClick: () -> Unit) {
                 color = Color.Black
             )
 
-            // Horizontal list for category selection
             LazyRow(
                 modifier = Modifier.padding(vertical = 12.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -106,34 +113,40 @@ fun HomeScreen(onItemClick: (Int) -> Unit, onCartClick: () -> Unit) {
                 }
             }
 
-            // Filtering the menu based on the selected category [cite: 24, 25, 26, 40, 41, 42]
-            val filteredItems = sampleMenuItems.filter { it.category == selectedCategory }
+            // 4. Reactive filtering logic
+            val filteredItems = remember(selectedCategory) {
+                sampleMenuItems.filter { it.category == selectedCategory }
+            }
 
-            // Grid displaying product cards
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(2),
-                contentPadding = PaddingValues(vertical = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                items(filteredItems) { item ->
-                    ProductCard(
-                        item = item,
-                        onClick = { onItemClick(item.id) }
-                    )
+            if (filteredItems.isEmpty()) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text("No $selectedCategory items yet", color = TextGray)
+                }
+            } else {
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(2),
+                    contentPadding = PaddingValues(bottom = 16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    items(filteredItems) { item ->
+                        ProductCard(
+                            item = item,
+                            onClick = { onItemClick(item.id) }
+                        )
+                    }
                 }
             }
         }
     }
 }
 
-// --- Helper Composables ---
+// --- Helper Composables (Cleaned of Cite tags) ---
 
 @Composable
 fun CategoryChip(name: String, isSelected: Boolean, onClick: () -> Unit) {
     Surface(
         modifier = Modifier.clickable { onClick() },
-        // Selected chip uses DarkGreen; unselected uses White [cite: 86]
         color = if (isSelected) DarkGreen else Color.White,
         shape = RoundedCornerShape(20.dp),
         shadowElevation = 2.dp
@@ -153,12 +166,10 @@ fun ProductCard(item: MenuItem, onClick: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onClick() },
-        // Card background matches the light-cream theme
         colors = CardDefaults.cardColors(containerColor = CardBackground),
         shape = RoundedCornerShape(16.dp)
     ) {
         Column(modifier = Modifier.padding(8.dp)) {
-            // Product Image
             Image(
                 painter = painterResource(id = item.imageRes),
                 contentDescription = item.title,
@@ -171,7 +182,6 @@ fun ProductCard(item: MenuItem, onClick: () -> Unit) {
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Product Information [cite: 12, 13, 16, 18, 27, 43]
             Text(
                 text = item.title,
                 fontWeight = FontWeight.Bold,
@@ -192,14 +202,12 @@ fun ProductCard(item: MenuItem, onClick: () -> Unit) {
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // Price label [cite: 12, 17, 27, 44]
                 Text(
                     text = item.price,
                     fontWeight = FontWeight.Bold,
                     color = DarkGreen
                 )
 
-                // Add Button (+) [cite: 14, 15, 19, 20, 30, 31, 35, 36, 47, 48, 54, 55]
                 Box(
                     modifier = Modifier
                         .size(30.dp)

@@ -71,4 +71,6 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.7.7")
     implementation("androidx.compose.material:material-icons-extended")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
+    implementation("com.stripe:stripe-android:22.5.0")
+    implementation("com.stripe:stripe-android:21.3.0")
 }
