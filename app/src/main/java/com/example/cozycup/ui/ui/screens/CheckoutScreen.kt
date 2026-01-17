@@ -1,9 +1,6 @@
 package com.example.cozycup.ui.screens
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -24,99 +21,118 @@ import androidx.compose.ui.unit.sp
 import com.example.cozycup.R
 import com.example.cozycup.ui.CartViewModel
 import com.example.cozycup.ui.ui.theme.*
+import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CheckoutScreen(
     viewModel: CartViewModel,
     onBackClick: () -> Unit,
-    onConfirmOrder: () -> Unit
+    onPaymentSuccess: (String) -> Unit
 ) {
-    var paymentMethod by remember { mutableStateOf("Card") } // "Card" or "PayPal"
+    var paymentMethod by remember { mutableStateOf("Card") }
+    var isProcessing by remember { mutableStateOf(false) }
 
-    Scaffold(
-        topBar = {
-            CenterAlignedTopAppBar(
-                title = { Text("Checkout", fontWeight = FontWeight.Bold) },
-                navigationIcon = {
-                    IconButton(onClick = onBackClick) { Icon(Icons.Default.ArrowBack, null) }
-                },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = AppBackground)
-            )
-        },
-        bottomBar = {
-            Button(
-                onClick = onConfirmOrder,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(24.dp)
-                    .height(56.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = DarkGreen),
-                shape = RoundedCornerShape(12.dp)
-            ) {
-                Text("Confirm Payment", fontSize = 18.sp, fontWeight = FontWeight.Bold)
-            }
+    if (isProcessing) {
+        LaunchedEffect(Unit) {
+            delay(2500)
+            onPaymentSuccess(paymentMethod)
         }
-    ) { padding ->
-        Column(
-            modifier = Modifier
-                .padding(padding)
-                .padding(horizontal = 24.dp)
-        ) {
-            Text("Delivery Address", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+    }
 
-            // Simple Address Card
-            Card(
-                modifier = Modifier.padding(vertical = 12.dp),
-                colors = CardDefaults.cardColors(containerColor = Color.White),
-                elevation = CardDefaults.cardElevation(2.dp)
-            ) {
-                Column(modifier = Modifier.padding(16.dp)) {
-                    Text("Home", fontWeight = FontWeight.Bold)
-                    Text("123 Coffee Street, Brampton, ON", color = TextGray)
+    Box(modifier = Modifier.fillMaxSize()) {
+        Scaffold(
+            topBar = {
+                CenterAlignedTopAppBar(
+                    title = { Text("Checkout", fontWeight = FontWeight.Bold) },
+                    navigationIcon = {
+                        IconButton(onClick = onBackClick) { Icon(Icons.Default.ArrowBack, null) }
+                    },
+                    colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = AppBackground)
+                )
+            },
+            bottomBar = {
+                Button(
+                    onClick = { isProcessing = true },
+                    modifier = Modifier.fillMaxWidth().padding(24.dp).height(56.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = DarkGreen),
+                    shape = RoundedCornerShape(12.dp),
+                    enabled = !isProcessing
+                ) {
+                    Text("Confirm Payment", fontSize = 18.sp, fontWeight = FontWeight.Bold)
                 }
             }
+        ) { padding ->
+            Column(modifier = Modifier.padding(padding).padding(horizontal = 24.dp)) {
+                Text("Delivery Address", fontSize = 18.sp, fontWeight = FontWeight.Bold)
 
-            Spacer(modifier = Modifier.height(24.dp))
+                Card(
+                    modifier = Modifier.padding(vertical = 12.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color.White),
+                    elevation = CardDefaults.cardElevation(2.dp)
+                ) {
+                    Column(modifier = Modifier.padding(16.dp)) {
+                        Text("Home", fontWeight = FontWeight.Bold)
+                        Text("123 Coffee Street, Brampton, ON", color = TextGray)
+                    }
+                }
 
-            Text("Payment Method", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                Spacer(modifier = Modifier.height(24.dp))
+                Text("Payment Method", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                Spacer(modifier = Modifier.height(16.dp))
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Payment Option: Card
-            PaymentOptionRow(
-                title = "Credit Card",
-                iconRes = R.drawable.ic_card,
-                isSelected = paymentMethod == "Card",
-                onClick = { paymentMethod = "Card" }
-            )
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            // Payment Option: PayPal
-            PaymentOptionRow(
-                title = "PayPal",
-                iconRes = R.drawable.ic_paypal,
-                isSelected = paymentMethod == "PayPal",
-                onClick = { paymentMethod = "PayPal" }
-            )
-
-            Spacer(modifier = Modifier.height(32.dp))
-
-            // Order Summary
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Text("Total Amount", color = TextGray)
-                Text(
-                    text = "${viewModel.calculateGrandTotal().toInt()} CAD",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = DarkGreen
+                // Calling the helper function below
+                PaymentOptionRow(
+                    title = "Credit Card",
+                    iconRes = R.drawable.ic_card,
+                    isSelected = paymentMethod == "Card",
+                    onClick = { paymentMethod = "Card" }
                 )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                PaymentOptionRow(
+                    title = "PayPal",
+                    iconRes = R.drawable.ic_paypal,
+                    isSelected = paymentMethod == "PayPal",
+                    onClick = { paymentMethod = "PayPal" }
+                )
+
+                Spacer(modifier = Modifier.height(32.dp))
+
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                    Text("Total Amount", color = TextGray)
+                    Text(
+                        text = "${viewModel.calculateGrandTotal().toInt()} CAD",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = DarkGreen
+                    )
+                }
+            }
+        }
+
+        if (isProcessing) {
+            Box(
+                modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.4f)),
+                contentAlignment = Alignment.Center
+            ) {
+                Card(
+                    colors = CardDefaults.cardColors(containerColor = Color.White),
+                    shape = RoundedCornerShape(16.dp)
+                ) {
+                    Column(modifier = Modifier.padding(32.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                        CircularProgressIndicator(color = DarkGreen)
+                        Spacer(Modifier.height(16.dp))
+                        Text("Processing...", fontWeight = FontWeight.Bold)
+                    }
+                }
             }
         }
     }
 }
 
+// --- HELPER COMPOSABLE (Defined outside the main function) ---
 @Composable
 fun PaymentOptionRow(
     title: String,
@@ -142,11 +158,8 @@ fun PaymentOptionRow(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            // Standardized Icon Container (Fixed 48dp size)
             Box(
-                modifier = Modifier
-                    .size(48.dp)
-                    .clip(RoundedCornerShape(8.dp)),
+                modifier = Modifier.size(48.dp).clip(RoundedCornerShape(8.dp)),
                 contentAlignment = Alignment.Center
             ) {
                 Image(
@@ -167,7 +180,6 @@ fun PaymentOptionRow(
             )
         }
 
-        // Selection Indicator
         if (isSelected) {
             Icon(
                 imageVector = Icons.Default.CheckCircle,
@@ -176,11 +188,7 @@ fun PaymentOptionRow(
                 modifier = Modifier.size(24.dp)
             )
         } else {
-            Box(
-                modifier = Modifier
-                    .size(24.dp)
-                    .border(1.dp, Color.LightGray, CircleShape)
-            )
+            Box(modifier = Modifier.size(24.dp).border(1.dp, Color.LightGray, CircleShape))
         }
     }
 }
