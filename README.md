@@ -63,7 +63,14 @@ Run the app on an emulator or physical device.
 
 📱 Screenshots
 Home Screen	Product Details	Stripe Checkout
-[Image Placeholder]	[Image Placeholder]	[Image Placeholder]
+
+<p float="left">
+  <img src="https://github.com/Isidore-M/CozyCup3/blob/91dd41ae15d0cef30d7c61083715917842f35496/Screenshot_20260119_220013.png" width="30%" />
+  <img src="https://github.com/Isidore-M/CozyCup3/blob/91dd41ae15d0cef30d7c61083715917842f35496/Screenshot_20260119_220023.png" width="30%" /> 
+  <img src="https://github.com/Isidore-M/CozyCup3/blob/91dd41ae15d0cef30d7c61083715917842f35496/Screenshot_20260119_220032.png" width="30%" />
+  <img src="https://github.com/Isidore-M/CozyCup3/blob/91dd41ae15d0cef30d7c61083715917842f35496/Screenshot_20260119_220041.png" width="30%" /> 
+ 
+</p>
 
 
 --------------------------------------------------------------------------------------------------------------------------
@@ -80,6 +87,16 @@ data/repository: Logic for fetching product data and handling payments.
 
 viewmodel: Managing UI state and business logic.
 
+
+<p float="left">
+  <img src="https://github.com/Isidore-M/CozyCup3/blob/91dd41ae15d0cef30d7c61083715917842f35496/Screenshot_20260119_220050.png" width="30%" />
+  <img src="https://github.com/Isidore-M/CozyCup3/blob/91dd41ae15d0cef30d7c61083715917842f35496/Screenshot_20260119_220106.png" width="30%" /> 
+  <img src="https://github.com/Isidore-M/CozyCup3/blob/91dd41ae15d0cef30d7c61083715917842f35496/Screenshot_20260119_220114.png" width="30%" />
+  <img src="https://github.com/Isidore-M/CozyCup3/blob/91dd41ae15d0cef30d7c61083715917842f35496/Screenshot_20260119_220141.png" width="30%" /> 
+  <img src="https://github.com/Isidore-M/CozyCup3/blob/91dd41ae15d0cef30d7c61083715917842f35496/Screenshot_20260119_220146.png" width="30%" />
+  <img src="https://github.com/Isidore-M/CozyCup3/blob/91dd41ae15d0cef30d7c61083715917842f35496/Screenshot_20260119_220152.png" width="30%" /> 
+ 
+</p>
 --------------------------------------------------------------------------------------------------------------------------
 
 🤝 Contributing
